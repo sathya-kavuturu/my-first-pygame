@@ -19,14 +19,21 @@ snail_rect = snail_surface.get_rect(bottomleft = (750,300))
 player_surf = pg.image.load("graphics/Player/player_stand.png").convert_alpha()
 player_rect = player_surf.get_rect(bottomright = (100,300))
 
+player_gravity = 0
+
 while True:
     for event in pg.event.get():
         if event.type == pg.QUIT:
             pg.quit()
             exit()
 
-        # if event.type == pg.MOUSEMOTION:
-        #     if player_rect.collidepoint(event.pos): print("collide")
+        if event.type == pg.MOUSEBUTTONDOWN:
+            if player_rect.collidepoint(event.pos): 
+                player_gravity = -20
+
+        if event.type == pg.KEYDOWN:
+            if event.key == pg.K_SPACE and player_rect.bottom >=300:
+                player_gravity = -20
 
     screen.blit(sky_surf,(0,0))
     screen.blit(ground_surf, (0,300))
@@ -38,15 +45,11 @@ while True:
     snail_rect.x -= 4
     if snail_rect.right <= 0: snail_rect.right = 800
     screen.blit(snail_surface, snail_rect)
-    screen.blit(player_surf, player_rect)
-    
 
-    # if player_rect.colliderect(snail_rect):
-    #     print("collision")
-    
-    # mouse_pos = pg.mouse.get_pos()
-    # if player_rect.collidepoint(mouse_pos):
-    #     print("collide")
+    player_gravity += 1
+    player_rect.y += player_gravity
+    if player_rect.bottom > 300: player_rect.bottom = 300 
+    screen.blit(player_surf, player_rect)
 
     pg.display.update()
     clock.tick(60)
